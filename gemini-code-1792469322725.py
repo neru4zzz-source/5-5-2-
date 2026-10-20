@@ -67,7 +67,7 @@ if st.button("🚀 AI에게 설득 시도하기"):
 
                 # Gemini 모델 호출 (gemini-1.5-flash 모델 사용)
                 response = client.models.generate_content(
-                    model='gemini-2.5-flash',
+                    model='gemini-1.5-flash',
                     contents=prompt,
                 )
                 

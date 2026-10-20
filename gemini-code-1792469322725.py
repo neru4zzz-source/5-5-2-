@@ -65,9 +65,9 @@ if st.button("🚀 AI에게 설득 시도하기"):
                 5. 판정 이유와 함께, 더 멋진 글로 고치려면 어떤 점을 보완해야 할지 다정하게 피드백을 남겨줘.
                 """
 
-                # Gemini 모델 호출 (gemini-2.0-flash 모델 사용)
+                # Gemini 모델 호출 (gemini-flash-latest 모델 사용)
                 response = client.models.generate_content(
-                    model='gemini-2.0-flash',
+                    model='gemini-flash-latest',
                     contents=prompt,
                 )
                 

@@ -6,7 +6,8 @@ import requests
 st.set_page_config(page_title="설득의 신 - AI 토론 시뮬레이터", page_icon="🎯", layout="centered")
 
 # ⚠️ 여기에 아까 구글 앱스 스크립트에서 복사한 '웹 앱 URL'을 넣어주세요!
-https://script.google.com/macros/s/AKfycbwx8J-jHygCCd_oCHLfOGzqPYPIYdoyQuJ-h0y_2g1i6p6phGXVkQ6yNJfVSEu8Yky8cw/exec
+GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwx8J-jHygCCd_oCHLfOGzqPYPIYdoyQuJ-h0y_2g1i6p6phGXVkQ6yNJfVSEu8Yky8cw/exec"
+
 st.title("🎯 AI를 설득해봐! - 설득 왕을 찾아라")
 st.markdown("초등학교 5학년 친구들, 여러분의 논리적인 글로 AI 상대를 설득해 보세요!")
 
@@ -29,7 +30,7 @@ topics = [
     "7. 일기 검사는 학생의 사생활을 위해 없애야 한다",
     "8. 교실에서 반려동물(햄스터, 물고기 등)을 키워야 한다",
     "9. 현장체험학습 장소를 학생들이 직접 투표로 결정해야 한다",
-    "10. 체육 시간을 일주일에 3번 이상으로 늘려야 한다"
+    "10. 체육 시간을 일주일에 5번 이상으로 늘려야 한다"
 ]
 
 # 사용자 입력 인터페이스

@@ -1,9 +1,12 @@
 import streamlit as st
 from google import genai
+import requests
 
 # 페이지 설정
 st.set_page_config(page_title="설득의 신 - AI 토론 시뮬레이터", page_icon="🎯", layout="centered")
 
+# ⚠️ 여기에 아까 구글 앱스 스크립트에서 복사한 '웹 앱 URL'을 넣어주세요!
+https://script.google.com/macros/s/AKfycbwx8J-jHygCCd_oCHLfOGzqPYPIYdoyQuJ-h0y_2g1i6p6phGXVkQ6yNJfVSEu8Yky8cw/exec
 st.title("🎯 AI를 설득해봐! - 설득 왕을 찾아라")
 st.markdown("초등학교 5학년 친구들, 여러분의 논리적인 글로 AI 상대를 설득해 보세요!")
 
@@ -30,6 +33,7 @@ topics = [
 ]
 
 # 사용자 입력 인터페이스
+student_name = st.text_input("👤 이름 또는 학번을 적어주세요 (예: 5학년 3반 12번 홍길동):", placeholder="이름을 적어주세요")
 selected_topic = st.selectbox("📌 토론하고 싶은 주제를 선택하세요:", topics)
 stance = st.radio("나의 입장은요?", ["찬성", "반대"])
 
@@ -42,6 +46,8 @@ student_argument = st.text_area(
 if st.button("🚀 AI에게 설득 시도하기"):
     if not api_key:
         st.error("⚠️ 사이드바에 구글 Gemini API 키를 먼저 입력해 주세요!")
+    elif not student_name.strip():
+        st.warning("⚠️ 이름을 먼저 입력해 주세요!")
     elif not student_argument.strip():
         st.warning("⚠️ 먼저 설득하는 글을 작성해 주세요!")
     else:
@@ -59,22 +65,40 @@ if st.button("🚀 AI에게 설득 시도하기"):
 
                 [규칙]
                 1. 초등학교 5학년 학생의 눈높이에 맞춰 친근하고 다정한 말투(~해요, ~랍니다)로 대답해 줘.
-                2. 학생의 글에서 근거가 얼마나 논리적이고 짜임새 있는지 평가해 줘.
+                2. 학생의 글에서 근거가 얼마나 논리적이어야 하고 짜임새 있는지 평가해 줘.
                 3. 학생의 글이 충분히 타당하고 설득력이 있다면 대답 맨 처음에 "🎉 설득 성공!"을 외치며 수긍해 줘.
                 4. 만약 논리가 부족하거나 억지이거나 근거가 부실하다면 대답 맨 처음에 "🤔 아직은 부족해요! 설득 실패"라고 판정해 줘.
                 5. 판정 이유와 함께, 더 멋진 글로 고치려면 어떤 점을 보완해야 할지 다정하게 피드백을 남겨줘.
                 """
 
-                # Gemini 모델 호출 (gemini-flash-latest 모델 사용)
+                # 최신 안정형 표준 모델 호출 (gemini-flash-latest 사용)
                 response = client.models.generate_content(
                     model='gemini-flash-latest',
                     contents=prompt,
                 )
                 
+                ai_result = response.text
+                
                 # 결과 출력
                 st.markdown("---")
                 st.subheader("📢 AI 심사위원의 판정 결과")
-                st.write(response.text)
+                st.write(ai_result)
+                
+                # 구글 스프레드시트로 데이터 전송
+                if GOOGLE_SCRIPT_URL and "macros/s" in GOOGLE_SCRIPT_URL:
+                    payload = {
+                        "student_name": student_name,
+                        "topic": selected_topic,
+                        "stance": stance,
+                        "argument": student_argument,
+                        "result": ai_result
+                    }
+                    try:
+                        requests.post(GOOGLE_SCRIPT_URL, json=payload)
+                        st.success("✨ 답변과 AI 판정 결과가 선생님의 구글 시트에 안전하게 저장되었습니다!")
+                    except Exception as sheet_err:
+                        # 시트 전송에 실패해도 화면 표시는 정상 작동하도록 예외 처리
+                        pass
                 
             except Exception as e:
                 st.error(f"오류가 발생했습니다. API 키를 다시 확인해 주세요.\n상세 내용: {e}")
